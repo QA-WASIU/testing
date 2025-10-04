@@ -512,7 +512,6 @@ const setPasswordForGoogleUser = async (req, res) => {
 module.exports = {
   signup,
   login,
-  makeAdmin,
   forgotPassword,
   verifyOtp,
   resetPassword,
