@@ -148,7 +148,61 @@ const login = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error", error });
   }
 };
+ const LoginPin = async (req, res) => {
+  try {
+    const { userId, loginPin } = req.body;
+    if (!loginPin || loginPin.length !== 6)
+      return res.status(400).json({ message: "Login PIN must be 6 digits" });
 
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.loginPin = await bcrypt.hash(loginPin, 10);
+    await user.save();
+
+    res.status(200).json({ message: "Login PIN set successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ Set 4-digit Transaction PIN
+const TransactionPin = async (req, res) => {
+  try {
+    const { userId, transactionPin } = req.body;
+    if (!transactionPin || transactionPin.length !== 4)
+      return res.status(400).json({ message: "Transaction PIN must be 4 digits" });
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.transactionPin = await bcrypt.hash(transactionPin, 10);
+    await user.save();
+
+    res.status(200).json({ message: "Transaction PIN set successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ Verify a PIN
+ const verifyPin = async (req, res) => {
+  try {
+    const { userId, pinType, pin } = req.body;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const storedPin = pinType === 'login' ? user.loginPin : user.transactionPin;
+    if (!storedPin) return res.status(400).json({ message: "PIN not set" });
+
+    const isMatch = await bcrypt.compare(pin, storedPin);
+    if (!isMatch) return res.status(401).json({ message: "Invalid PIN" });
+
+    res.status(200).json({ message: "PIN verified successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+  };
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   // Validate input
@@ -512,7 +566,9 @@ const setPasswordForGoogleUser = async (req, res) => {
 module.exports = {
   signup,
   login,
-  makeAdmin,
+  LoginPin,
+  TransactionPin, 
+  verifyPin,
   forgotPassword,
   verifyOtp,
   resetPassword,

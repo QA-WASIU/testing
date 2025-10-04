@@ -1,12 +1,13 @@
 const axios = require('axios');
 require('dotenv').config();
-
+const flwApi = require("../config/flutterwave");
+const Pin = require('../models/pin.schema');
 const FLW_SECRET_KEY = process.env.FLW_SECRET_KEY;
 
-async function createVirtualAccount({ email, phone_number, tx_ref }) {
+async function createVirtualAccount({ email, phone, tx_ref }) {
   const payload = {
     email,
-    phone_number,
+    phone,
     is_permanent: true,
     tx_ref,
     narration: 'Virtual Account for User',

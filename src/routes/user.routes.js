@@ -1,8 +1,12 @@
 const express = require('express');
-//const {Users}= require('../models/user.model');
+
+
 const { 
   signup, 
   login, 
+  LoginPin, 
+  TransactionPin, 
+  verifyPin,
   forgotPassword, 
   resetPassword, 
   verifyOtp, 
@@ -27,5 +31,14 @@ router.get('/google', initiateGoogleAuth);
 router.get('/google/callback', handleGoogleCallback);
 router.delete('/unlink-google/:userId', unlinkGoogle);
 router.post('/set-password/:userId', setPasswordForGoogleUser);
+//Pin Routes
+
+
+router.post('/set-login-pin', LoginPin);
+router.post('/set-transaction-pin', TransactionPin);
+router.post('/verify-pin', verifyPin);
+
+
+
 
 module.exports = router

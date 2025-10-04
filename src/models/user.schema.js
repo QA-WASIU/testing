@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    userId: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     firstName: {
         type: String,
         required: true,
@@ -30,6 +35,14 @@ const userSchema = new mongoose.Schema({
             return !this.googleId; // Verify password not required if using Google OAuth
         },
         minlength: 6
+    },
+    loginPin: {
+        type: String,
+        required: true
+    },
+    transactionPin: {
+        type: String,
+        required: true
     },
     googleId: {
         type: String,
@@ -61,7 +74,8 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-}, {
+}, 
+{
     timestamps: true,
     versionKey: false
 });
